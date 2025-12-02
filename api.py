@@ -1,7 +1,8 @@
-import tkinter as tk
 import requests
-
-window = tk.Tk()
-window.title('Message reverser')
-window.geometry('400x250')
-window.resizable(False,False)
+# replace all of the words in a text wit random synonyms
+def word(word):
+        bore = requests.get(f'https://wordsapiv1.p.mashape.com/words/{word.lower()}')
+        data = bore.json()
+        
+    
+print(word('fart'))

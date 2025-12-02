@@ -1,22 +1,18 @@
 import requests
 
-def getPoke(poke):
-     response = requests.get(f"https://pokeapi.co/api/v2/pokemon/{poke.lower()}")
+def getWord(word):
+     response = requests.get(f"https://lingua-robot.p.rapidapi.com/language/v1/entries/en/{word.lower()}")
      if response.status_code != 200:
           print("Error fetching data")
           return None
      data = response.json()
      for key, value in data.items():
           print(key,  "→", value )
-     return {
-          'name': data['name'],
-          'height' : data['height'],
-          'weight' : data ['weight'],
-          "types": [t["type"]["name"] for t in data["types"]]}
+     return 
 
 
      
-pokemon = getPoke("Bulbasaur")
+pokemon = getWord("Xiyang")
 print(pokemon)
 
     
