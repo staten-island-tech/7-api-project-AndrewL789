@@ -1,12 +1,13 @@
 import requests
 import random
 import tkinter as tk
+from tkinter import ttk 
 #anime wordle 
 #https://api.jikan.moe/v4/ <- the url base 
 def anicheck(x):
-     thething = requests.get("https://api.jikan.moe/v4/anime?q={x}")
+     thething = requests.get(f"https://api.jikan.moe/v4/anime?q={x}")
      gah = thething.json()
-     compare = gah['data']
+     compare = [t['title'] for t in gah['data']]
      return compare
 def randoman():
      popular = requests.get("https://api.jikan.moe/v4/top/anime")
@@ -37,15 +38,27 @@ def game():
           if inputamt == 5 and correct == False:
                print(f'You lose, it was {names}')
 #game()
-window = tk.Tk()
-window.title = ('Wordle')
-window.geometry("960x540")
-prompt = tk.Label(window, text="Guess the anime:",
-font=("Arial", 14))
-prompt.pack(pady=10)
-entry = tk.Entry(window, font=("Arial", 14), width=30)
-entry.pack(pady=5)
-result_label = tk.Label(window, text="", font=("Arial", 14, "bold"),
-fg="blue")
-result_label.pack(pady=15)
-window.mainloop()
+def gamescreen():
+     x = randoman()
+     names, qualities = analyze(x)
+     window = tk.Tk()
+     window.title = ('Wordle')
+     window.geometry("960x540")
+     def update(event=None):
+          text = drop.get()
+          compare = anicheck(text)
+          drop['values'] = compare
+     def on_enter(event=None):
+          value = drop.get()
+          drop.delete(0, tk.END)
+     drop = ttk.Combobox(window)
+     drop['values'] = []
+     drop.set("")
+     drop.pack()
+
+
+     drop.bind("<KeyRelease>", update)
+     drop.bind("<Return>", on_enter)
+
+     window.mainloop()
+gamescreen()
