@@ -3,11 +3,11 @@ import random
 import tkinter as tk
 from tkinter import ttk 
 #anime wordle 
-#https://api.jikan.moe/v4/ <- the url base 
+#https://api.jikan.moe/v4/ <- the url base
 def anicheck(x):
      thething = requests.get(f"https://api.jikan.moe/v4/anime?q={x}")
      gah = thething.json()
-     compare = [t['title'] for t in gah['data']]
+     compare = [t['title_english'] if t['title_english'] is not None else t['title'] for t in gah['data']]
      return compare
 def randoman():
      popular = requests.get("https://api.jikan.moe/v4/top/anime")
@@ -37,7 +37,6 @@ def game():
                print(f'correct! got it in {inputamt}')
           if inputamt == 5 and correct == False:
                print(f'You lose, it was {names}')
-#game()
 def gamescreen():
      x = randoman()
      names, qualities = analyze(x)
@@ -49,16 +48,23 @@ def gamescreen():
           compare = anicheck(text)
           drop['values'] = compare
      def on_enter(event=None):
-          value = drop.get()
-          drop.delete(0, tk.END)
+          if drop.get() in drop['values']:
+               value = drop.get()
+               drop.delete(0, tk.END)
+     #def sbs(x):
+
      drop = ttk.Combobox(window)
      drop['values'] = []
      drop.set("")
      drop.pack()
-
-
      drop.bind("<KeyRelease>", update)
      drop.bind("<Return>", on_enter)
+     label1 = tk.Label(window, text="This is uneditable text.")
+     label2 = tk.Label(window, text="This is uneditable text.")
+     label3 = tk.Label(window, text="This is uneditable text.")
+     label4 = tk.Label(window, text="This is uneditable text.")
+     label5 = tk.Label(window, text="This is uneditable text.") 
+     label1.pack(pady= 3), label2.pack(pady =3), label3.pack(3), label4.pack(3), label5.pack(3)
 
      window.mainloop()
 gamescreen()
