@@ -2,13 +2,15 @@ import requests
 import random
 import tkinter as tk
 from tkinter import ttk 
+import threading
 #anime wordle 
 #https://api.jikan.moe/v4/ <- the url base
 def anicheck(x):
      thething = requests.get(f"https://api.jikan.moe/v4/anime?q={x}")
      gah = thething.json()
+     senor = gah['data'][0]
      compare = [t['title_english'] if t['title_english'] is not None else t['title'] for t in gah['data']]
-     return compare
+     return compare, senor
 def randoman():
      popular = requests.get("https://api.jikan.moe/v4/top/anime")
      if popular.status_code != 200:
@@ -45,26 +47,32 @@ def gamescreen():
      window.geometry("960x540")
      def update(event=None):
           text = drop.get()
-          compare = anicheck(text)
+          compare, _ = anicheck(text)
           drop['values'] = compare
      def on_enter(event=None):
           if drop.get() in drop['values']:
                value = drop.get()
+               _, senor = anicheck(value)
+               _ , qualities = analyze(senor)
+               text = f"Guess: {value}\n" \
+               f"Type: {qualities['type']}\n" \
+               f"Genres: {', '.join(qualities['genre'])}\n" \
+               f"Source: {qualities['source']}\n" \
+               f"Episodes: {qualities['episodes']}\n" \
+               f"Rating: {qualities['rating']}\n" \
+               f"Score: {qualities['score']}\n" \
+               f"Popularity: {qualities['popularity']}"
+               new_label = tk.Label(window, text=text, font=("Arial", 10))
+               new_label.pack(pady=9)
+               label.append(new_label)
                drop.delete(0, tk.END)
-     #def sbs(x):
-
      drop = ttk.Combobox(window)
      drop['values'] = []
      drop.set("")
      drop.pack()
      drop.bind("<KeyRelease>", update)
      drop.bind("<Return>", on_enter)
-     label1 = tk.Label(window, text="This is uneditable text.")
-     label2 = tk.Label(window, text="This is uneditable text.")
-     label3 = tk.Label(window, text="This is uneditable text.")
-     label4 = tk.Label(window, text="This is uneditable text.")
-     label5 = tk.Label(window, text="This is uneditable text.") 
-     label1.pack(pady= 3), label2.pack(pady =3), label3.pack(3), label4.pack(3), label5.pack(3)
+     label = [] 
 
      window.mainloop()
 gamescreen()
