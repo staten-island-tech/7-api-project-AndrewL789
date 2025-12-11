@@ -41,10 +41,11 @@ def game():
                print(f'You lose, it was {names}')
 def gamescreen():
      x = randoman()
-     names, qualities = analyze(x)
+     names, qualitie = analyze(x)
      window = tk.Tk()
      window.title = ('Wordle')
      window.geometry("960x540")
+     window.configure(bg="#2C2F33")
      def update(event=None):
           text = drop.get()
           compare, _ = anicheck(text)
@@ -62,17 +63,21 @@ def gamescreen():
                f"Rating: {qualities['rating']}\n" \
                f"Score: {qualities['score']}\n" \
                f"Popularity: {qualities['popularity']}"
-               new_label = tk.Label(window, text=text, font=("Arial", 10))
-               new_label.pack(pady=9)
-               label.append(new_label)
+               te(text)
                drop.delete(0, tk.END)
+     def te(x):
+          new_text= tk.Text(window, height = 10, width = 180,bg = "#23272A", font=("Arial", 10))
+          new_text.insert("end", x)
+          new_text.config(state="disabled")
+          new_text.pack(pady=9)
+          gah.append(new_text)
      drop = ttk.Combobox(window)
      drop['values'] = []
      drop.set("")
-     drop.pack()
+     drop.pack(pady = 10)
      drop.bind("<KeyRelease>", update)
      drop.bind("<Return>", on_enter)
-     label = [] 
+     gah = [] 
 
      window.mainloop()
 gamescreen()
