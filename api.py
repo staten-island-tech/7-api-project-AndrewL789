@@ -24,22 +24,8 @@ def analyze(anime):
      names = [n.lower() for n in name if n is not None]
      qualities = {'type': anime['type'], 'genre' :[g['name'] for g in anime['genres']], 'source': anime['source'], 'episodes' : anime['episodes'], 'rating' : anime['rating'], 'score' : anime['score'], 'popularity' : anime['popularity']}
      return names, qualities
-def game():
-     x = randoman()
-     names, qualities = analyze(x)
-     print(qualities)
-     print(names) # take this out at end
-     correct = False
-     inputamt = 0
-     while correct == False and inputamt < 5:
-          guess = input('guess? :').strip().lower()
-          inputamt += 1
-          if guess in names:
-               correct = True
-               print(f'correct! got it in {inputamt}')
-          if inputamt == 5 and correct == False:
-               print(f'You lose, it was {names}')
 def gamescreen():
+
      x = randoman()
      names, qualitie = analyze(x)
      window = tk.Tk()
@@ -80,4 +66,67 @@ def gamescreen():
      gah = [] 
 
      window.mainloop()
-gamescreen()
+class game:
+     def __init__(self):
+          self.window = tk.Tk()
+          self.window.title("The game")
+          self.window.geometry("960x540")
+          self.window.configure(bg="#2C2F33")
+          self.x = randoman()
+          self.names, self.qualitie = analyze(self.x)
+          self.gah=[]
+          self.drop = ttk.Combobox(self.window)
+          self.drop['values'] = []
+          self.drop.set("")
+          self.drop.pack(pady=10)
+          self.drop.bind("<KeyRelease>", self.update)
+          self.drop.bind("<Return>", self.on_enter)
+
+
+     def update(self, event=None):
+          text = self.drop.get()
+          compare, _ = anicheck(text)
+          self.drop['values'] = compare
+     def te(self, x):
+          new_text= tk.Text(self.window, height=10, width=180, bg="#23272A", font=("Arial", 10))
+          new_text.insert("end", x)
+          new_text.config(state="disabled")
+          new_text.pack(pady=9)
+          self.gah.append(new_text)
+     def on_enter(self, event=None):
+          if self.drop.get() in self.drop['values']:
+               value = self.drop.get()
+               _, senor = anicheck(value)
+               _ , qualities = analyze(senor)
+               output = self.xi(qualities)
+
+               text = (
+                    f"Guess: {value}\n"
+                    f"Type: {output['type']}\n"
+                    f"Genres: {', '.join(output['genre'])}\n"
+                    f"Source: {output['source']}\n"
+                    f"Episodes: {output['episodes']}\n"
+                    f"Rating: {output['rating']}\n"
+                    f"Score: {output['score']}\n"
+                    f"Popularity: {output['popularity']}"
+               )
+               self.te(text)
+               self.drop.delete(0, tk.END)
+     def run(self):
+          self.window.mainloop()
+     def xi(self, x):
+          output = {}
+          output['type'] = x['type'] + ('✅' if self.qualitie['type'] == x['type'] else '❌')
+          output['source'] = x['source'] +('✅' if self.qualitie['source'] == x['source'] else '❌')
+          output['episodes'] = str(x['episodes']) +('✅' if self.qualitie['episodes'] == x['episodes'] else '❌')
+          gen = [t + ('✅' if t in self.qualitie['genre'] else '❌') for t in x['genre']]
+          output['genre'] = gen 
+          output['popularity'] = str(x['popularity']) +('✅' if self.qualitie['popularity'] == x['popularity'] else '❌')
+          output['score'] = str(x['score']) +('✅' if self.qualitie['score'] == x['score'] else '❌')
+          output['rating'] = str(x['rating']) +('✅' if self.qualitie['rating'] == x['rating'] else '❌')
+          return output
+
+
+
+xiyang = game()
+xiyang.run()
