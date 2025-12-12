@@ -2,7 +2,6 @@ import requests
 import random
 import tkinter as tk
 from tkinter import ttk 
-import threading
 #anime wordle 
 #https://api.jikan.moe/v4/ <- the url base
 def anicheck(x):
@@ -74,32 +73,35 @@ class game:
           self.window.configure(bg="#2C2F33")
           self.x = randoman()
           self.names, self.qualitie = analyze(self.x)
+          self.guess_count = 0
           self.gah=[]
           self.drop = ttk.Combobox(self.window)
           self.drop['values'] = []
           self.drop.set("")
           self.drop.pack(pady=10)
+          self.label = tk.Label(self.window, text = self.names,bg="#2C2F33",fg="#FFFFFF")
+          self.label.pack(side = 'left')
           self.drop.bind("<KeyRelease>", self.update)
           self.drop.bind("<Return>", self.on_enter)
-
-
+          self.win = False
+          self.lose = False
      def update(self, event=None):
           text = self.drop.get()
           compare, _ = anicheck(text)
           self.drop['values'] = compare
      def te(self, x):
-          new_text= tk.Text(self.window, height=10, width=180, bg="#23272A", font=("Arial", 10))
+          new_text= tk.Text(self.window, height=10, width=180, bg="#23272A", fg="#FFFFFF", font=("Arial", 10))
           new_text.insert("end", x)
           new_text.config(state="disabled")
           new_text.pack(pady=9)
           self.gah.append(new_text)
      def on_enter(self, event=None):
-          if self.drop.get() in self.drop['values']:
+          if self.drop.get() in self.drop['values'] and self.guess_count < 5 and self.win == False and self.lose == False:
                value = self.drop.get()
                _, senor = anicheck(value)
                _ , qualities = analyze(senor)
                output = self.xi(qualities)
-
+               self.guess_count += 1
                text = (
                     f"Guess: {value}\n"
                     f"Type: {output['type']}\n"
@@ -108,10 +110,22 @@ class game:
                     f"Episodes: {output['episodes']}\n"
                     f"Rating: {output['rating']}\n"
                     f"Score: {output['score']}\n"
-                    f"Popularity: {output['popularity']}"
+                    f"Popularity: {output['popularity']}\n"
+                    f"guess number: {self.guess_count}"
                )
                self.te(text)
                self.drop.delete(0, tk.END)
+          for t in self.names:
+               if value == t:
+                         self.win = True
+          if self.guess_count == 5 and self.win == False:
+               self.lose = True
+          if self.win == True:
+               self.te('You win!')
+          if self.lose == True:
+               self.te(f'You lose, it was ')
+          
+               
      def run(self):
           self.window.mainloop()
      def xi(self, x):
@@ -125,8 +139,6 @@ class game:
           output['score'] = str(x['score']) +('✅' if self.qualitie['score'] == x['score'] else '❌')
           output['rating'] = str(x['rating']) +('✅' if self.qualitie['rating'] == x['rating'] else '❌')
           return output
-
-
 
 xiyang = game()
 xiyang.run()
