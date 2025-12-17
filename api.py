@@ -2,7 +2,6 @@ import requests
 import random
 import tkinter as tk
 from tkinter import ttk 
-import threading
 #anime wordle 
 #https://api.jikan.moe/v4/ <- the url base
 def anicheck(x):
@@ -25,6 +24,14 @@ def analyze(anime):
      qualities = {'type': anime['type'], 'genre' :[g['name'] for g in anime['genres']], 'source': anime['source'], 'episodes' : anime['episodes'], 'rating' : anime['rating'], 'score' : anime['score'], 'popularity' : anime['popularity']}
      id = anime['mal_id']
      return names, qualities, id
+def lazy(x,y): 
+     if x > y:
+          g = "⬇️"
+     if x < y:
+          g = '⬆️'
+     if x == y:
+          g = '✅'
+     return g
 class game:
      def __init__(self):
           self.window = tk.Tk()
@@ -91,12 +98,16 @@ class game:
           output = {}
           output['type'] = x['type'] + ('✅' if self.qualitie['type'] == x['type'] else '❌')
           output['source'] = x['source'] +('✅' if self.qualitie['source'] == x['source'] else '❌')
-          output['episodes'] = str(x['episodes']) +('✅' if self.qualitie['episodes'] == x['episodes'] else '❌')
+          epi = lazy(int(x['episodes']), int(self.qualitie['episodes']))
+          output['episodes'] = str(x['episodes']) + epi
           gen = [t + ('✅' if t in self.qualitie['genre'] else '❌') for t in x['genre']]
           output['genre'] = gen 
-          output['popularity'] = str(x['popularity']) +('✅' if self.qualitie['popularity'] == x['popularity'] else '❌')
-          output['score'] = str(x['score']) +('✅' if self.qualitie['score'] == x['score'] else '❌')
-          output['rating'] = str(x['rating']) +('✅' if self.qualitie['rating'] == x['rating'] else '❌')
+          pop = lazy(x['popularity'], self.qualitie['popularity'])
+          output['popularity'] = str(x['popularity']) + pop
+          sco = lazy(int(x['score']), int(self.qualitie['score']))
+          output['score'] = str(x['score']) + sco
+          rat = lazy(x['rating'], self.qualitie['rating'])
+          output['rating'] = str(x['rating']) + rat
           return output
 
 xiyang = game()
