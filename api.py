@@ -6,6 +6,8 @@ from tkinter import ttk
 #https://api.jikan.moe/v4/ <- the url base
 def anicheck(x):
      thething = requests.get(f"https://api.jikan.moe/v4/anime?q={x}")
+     if thething.status_code != 200:
+          return None
      gah = thething.json()
      senor = gah['data'][0]
      compare = [t['title_english'] if t['title_english'] is not None else t['title'] for t in gah['data']]
@@ -31,14 +33,15 @@ def lazy(x,y):
           q = '❌'
      return q
 def lazy2(x,y): 
-     x = int
-     y = int
-     if x > y:
-          g = "⬇️"
-     if x < y:
-          g = '⬆️'
-     if x == y:
-          g = '✅'
+     try:
+          if int(x) > int(y):
+               g = "⬇️"
+          if int(x) < int(y):
+               g = '⬆️'
+          if int(x) == int(y):
+               g = '✅'
+     except:
+          g = '❌'
      return g
 class game:
      def __init__(self):
@@ -59,7 +62,7 @@ class game:
           self.lose = False
      def update(self, event):
           text = self.drop.get()
-          compare, _ = anicheck(text)
+          compare, ball = anicheck(text)
           self.drop['values'] = compare
      def te(self, x):
           lotion= tk.Text(self.window, height=10, width=180, bg="#23272A", fg="#FFFFFF", font=("Arial", 10))
@@ -69,8 +72,8 @@ class game:
      def on_enter(self, event):
           if self.drop.get() in self.drop['values'] and self.guess_count < 5 and self.win == False and self.lose == False:
                value = self.drop.get()
-               _, senor = anicheck(value)
-               _ , qualities, id = analyze(senor)
+               yao, senor = anicheck(value)
+               xi , qualities, id = analyze(senor)
                output = self.xi(qualities)
                self.guess_count += 1
                text = (
@@ -93,11 +96,9 @@ class game:
           if self.win == True:
                self.te(f'You win! in {self.guess_count} attempts!')
                self.drop.destroy()
-               return
           if self.lose == True:
                self.te(f'You lose, it was {self.x['title_english'] or self.x['title']}')
-               self.drop.destroy()
-               return           
+               self.drop.destroy()       
      def run(self):
           self.window.mainloop()
      def xi(self, x):
@@ -108,7 +109,7 @@ class game:
           output['genre'] = [t + lazy(t,self.qualitie['genre']) for t in x['genre']]
           output['popularity'] = str(x['popularity']) +lazy2(x['popularity'], self.qualitie['popularity'])
           output['score'] = str(x['score']) + lazy2(x['score'], self.qualitie['score'])
-          output['rating'] = str(x['rating']) + lazy2(x['rating'], self.qualitie['rating'])
+          output['rating'] = str(x['rating']) + lazy(x['rating'], self.qualitie['rating'])
           return output
 
 xiyang = game()
