@@ -24,7 +24,15 @@ def analyze(anime):
      qualities = {'type': anime['type'], 'genre' :[g['name'] for g in anime['genres']], 'source': anime['source'], 'episodes' : anime['episodes'], 'rating' : anime['rating'], 'score' : anime['score'], 'popularity' : anime['popularity']}
      id = anime['mal_id']
      return names, qualities, id
-def lazy(x,y): 
+def lazy(x,y):
+     if x == y:
+          q = '✅'
+     else:
+          q = '❌'
+     return q
+def lazy2(x,y): 
+     x = int
+     y = int
      if x > y:
           g = "⬇️"
      if x < y:
@@ -41,7 +49,6 @@ class game:
           self.x = randoman()
           self.names, self.qualitie, self.id = analyze(self.x)
           self.guess_count = 0
-          self.gah=[]
           self.drop = ttk.Combobox(self.window)
           self.drop['values'] = []
           self.drop.set("")
@@ -50,17 +57,16 @@ class game:
           self.drop.bind("<Return>", self.on_enter)
           self.win = False
           self.lose = False
-     def update(self, event=None):
+     def update(self, event):
           text = self.drop.get()
           compare, _ = anicheck(text)
           self.drop['values'] = compare
      def te(self, x):
-          new_text= tk.Text(self.window, height=10, width=180, bg="#23272A", fg="#FFFFFF", font=("Arial", 10))
-          new_text.insert("end", x)
-          new_text.config(state="disabled")
-          new_text.pack(pady=9)
-          self.gah.append(new_text)
-     def on_enter(self, event=None):
+          lotion= tk.Text(self.window, height=10, width=180, bg="#23272A", fg="#FFFFFF", font=("Arial", 10))
+          lotion.insert("end", x)
+          lotion.config(state="disabled")
+          lotion.pack(pady=9)
+     def on_enter(self, event):
           if self.drop.get() in self.drop['values'] and self.guess_count < 5 and self.win == False and self.lose == False:
                value = self.drop.get()
                _, senor = anicheck(value)
@@ -96,18 +102,13 @@ class game:
           self.window.mainloop()
      def xi(self, x):
           output = {}
-          output['type'] = x['type'] + ('✅' if self.qualitie['type'] == x['type'] else '❌')
-          output['source'] = x['source'] +('✅' if self.qualitie['source'] == x['source'] else '❌')
-          epi = lazy(int(x['episodes']), int(self.qualitie['episodes']))
-          output['episodes'] = str(x['episodes']) + epi
-          gen = [t + ('✅' if t in self.qualitie['genre'] else '❌') for t in x['genre']]
-          output['genre'] = gen 
-          pop = lazy(x['popularity'], self.qualitie['popularity'])
-          output['popularity'] = str(x['popularity']) + pop
-          sco = lazy(int(x['score']), int(self.qualitie['score']))
-          output['score'] = str(x['score']) + sco
-          rat = lazy(x['rating'], self.qualitie['rating'])
-          output['rating'] = str(x['rating']) + rat
+          output['type'] = x['type'] + lazy(self.qualitie['type'],x['type'])
+          output['source'] = x['source'] + lazy(self.qualitie['source'], x['source'])
+          output['episodes'] = str(x['episodes']) + lazy2(x['episodes'],self.qualitie['episodes'])
+          output['genre'] = [t + lazy(t,self.qualitie['genre']) for t in x['genre']]
+          output['popularity'] = str(x['popularity']) +lazy2(x['popularity'], self.qualitie['popularity'])
+          output['score'] = str(x['score']) + lazy2(x['score'], self.qualitie['score'])
+          output['rating'] = str(x['rating']) + lazy2(x['rating'], self.qualitie['rating'])
           return output
 
 xiyang = game()
