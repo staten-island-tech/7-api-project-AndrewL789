@@ -11,7 +11,8 @@ def anicheck(x):
           senor = gah['data'][0]
           compare = [t['title_english'] if t['title_english'] is not None else t['title'] for t in gah['data']]
      except:
-          senor = [], compare = []
+          senor = [] 
+          compare = []
      return compare, senor
 def randoman():
      popular = requests.get("https://api.jikan.moe/v4/top/anime")
@@ -53,12 +54,14 @@ class game:
           self.x = randoman()
           self.names, self.qualitie, self.id = analyze(self.x)
           self.guess_count = 0
-          self.drop = ttk.Combobox(self.window)
+          self.label =tk.Label(self.window, text="Type anime name in textbox and click enter then go to dropdown.", font=("Arial", 14, "bold"),bg="#23272A", fg="#FFFFFF",)
+          self.label.pack(pady=15)
+          self.drop = ttk.Combobox(self.window, width = 90)
           self.drop['values'] = []
           self.drop.set("")
           self.entry = tk.Entry(self.window,bg="#23272A", fg="#FFFFFF", font=("Arial", 14), width=30)
-          self.entry.pack(side = tk.LEFT, pady =10, padx = 5)
-          self.drop.pack(side = tk.LEFT, pady=10, padx = 5)
+          self.entry.pack(pady =10, padx = 5)
+          self.drop.pack(pady=10, padx = 5)
           self.entry.bind("<Return>", self.update)
           self.drop.bind("<Return>", self.on_enter)
           self.win = False
