@@ -5,12 +5,13 @@ from tkinter import ttk
 #anime wordle 
 #https://api.jikan.moe/v4/ <- the url base
 def anicheck(x):
-     thething = requests.get(f"https://api.jikan.moe/v4/anime?q={x}")
-     if thething.status_code != 200:
-          return None
-     gah = thething.json()
-     senor = gah['data'][0]
-     compare = [t['title_english'] if t['title_english'] is not None else t['title'] for t in gah['data']]
+     try:
+          thething = requests.get(f"https://api.jikan.moe/v4/anime?q={x}")
+          gah = thething.json()
+          senor = gah['data'][0]
+          compare = [t['title_english'] if t['title_english'] is not None else t['title'] for t in gah['data']]
+     except:
+          senor = [], compare = []
      return compare, senor
 def randoman():
      popular = requests.get("https://api.jikan.moe/v4/top/anime")
@@ -55,13 +56,15 @@ class game:
           self.drop = ttk.Combobox(self.window)
           self.drop['values'] = []
           self.drop.set("")
-          self.drop.pack(pady=10)
-          self.drop.bind("<KeyRelease>", self.update)
+          self.entry = tk.Entry(self.window,bg="#23272A", fg="#FFFFFF", font=("Arial", 14), width=30)
+          self.entry.pack(side = tk.LEFT, pady =10, padx = 5)
+          self.drop.pack(side = tk.LEFT, pady=10, padx = 5)
+          self.entry.bind("<Return>", self.update)
           self.drop.bind("<Return>", self.on_enter)
           self.win = False
           self.lose = False
      def update(self, event):
-          text = self.drop.get()
+          text = self.entry.get()
           compare, ball = anicheck(text)
           self.drop['values'] = compare
      def te(self, x):
@@ -96,9 +99,11 @@ class game:
           if self.win == True:
                self.te(f'You win! in {self.guess_count} attempts!')
                self.drop.destroy()
+               self.entry.destroy()
           if self.lose == True:
                self.te(f'You lose, it was {self.x['title_english'] or self.x['title']}')
-               self.drop.destroy()       
+               self.drop.destroy()     
+               self.entry.destroy()  
      def run(self):
           self.window.mainloop()
      def xi(self, x):
