@@ -54,7 +54,7 @@ class game:
           self.x = randoman()
           self.names, self.qualitie, self.id = analyze(self.x)
           self.guess_count = 0
-          self.label =tk.Label(self.window, text="Type anime name in textbox and click enter then go to dropdown.", font=("Arial", 14, "bold"),bg="#23272A", fg="#FFFFFF",)
+          self.label =tk.Label(self.window, text="Type anime name in textbox, click enter then go to dropdown nd do the same.", font=("Arial", 14, "bold"),bg="#23272A", fg="#FFFFFF",)
           self.label.pack(pady=15)
           self.drop = ttk.Combobox(self.window, width = 90)
           self.drop['values'] = []
@@ -82,17 +82,7 @@ class game:
                xi , qualities, id = analyze(senor)
                output = self.xi(qualities)
                self.guess_count += 1
-               text = (
-                    f"Guess: {value}\n"
-                    f"Type: {output['type']}\n"
-                    f"Genres: {', '.join(output['genre'])}\n"
-                    f"Source: {output['source']}\n"
-                    f"Episodes: {output['episodes']}\n"
-                    f"Rating: {output['rating']}\n"
-                    f"Score: {output['score']}\n"
-                    f"Popularity: {output['popularity']}\n"
-                    f"guess number: {self.guess_count}"
-               )
+               text = (f"Guess: {value}\n" f"Type: {output['type']}\n" f"Genres: {', '.join(output['genre'])}\n" f"Source: {output['source']}\n" f"Episodes: {output['episodes']}\n" f"Rating: {output['rating']}\n" f"Score: {output['score']}\n" f"Popularity: {output['popularity']}\n" f"guess number: {self.guess_count}")
                self.te(text)
                self.drop.delete(0, tk.END)
                if id == self.id:
